@@ -1,31 +1,62 @@
 ﻿using System;
+using ProtoBuf;
 
+
+[ProtoContract]
+[Serializable]
 public class Revision
 {
+	[ProtoMember(1)]
 	public string rev_id;
+	[ProtoMember(2)]
 	public string rev_timestamp;
+	[ProtoMember(3)]
 	public string rev_user;
+	[ProtoMember(4)]
 	public string rev_user_text;
+	[ProtoMember(5)]
 	public string rev_page;
+	[ProtoMember(6)]
 	public string rev_sha1;
+	[ProtoMember(7)]
 	public string rev_minor_edit;
+	[ProtoMember(8)]
 	public string rev_deleted;
+	[ProtoMember(9)]
 	public string rev_parent_id;
+	[ProtoMember(10)]
 	public string archived;
+	[ProtoMember(11)]
 	public string reverting_id;
+	[ProtoMember(12)]
 	public string reverting_timestamp;
+	[ProtoMember(13)]
 	public string reverting_user;
+	[ProtoMember(14)]
 	public string reverting_user_text;
+	[ProtoMember(15)]
 	public string reverting_page;
+	[ProtoMember(16)]
 	public string reverting_sha1;
+	[ProtoMember(17)]
 	public string reverting_minor_edit;
+	[ProtoMember(18)]
 	public string reverting_deleted;
+	[ProtoMember(19)]
 	public string reverting_parent_id;
+	[ProtoMember(20)]
 	public string reverting_archived;
+	[ProtoMember(21)]
 	public string rev_revert_offset;
+	[ProtoMember(22)]
 	public string revisions_reverted;
+	[ProtoMember(23)]
 	public string reverted_to_rev_id;
 
+	public Revision ()
+	{
+	}
+	
 	public Revision (string rev_id, string rev_timestamp, string rev_user, string rev_user_text, string rev_page, string rev_sha1, string rev_minor_edit, string rev_deleted, string rev_parent_id, string archived, string reverting_id, string reverting_timestamp, string reverting_user, string reverting_user_text, string reverting_page, string reverting_sha1, string reverting_minor_edit, string reverting_deleted, string reverting_parent_id, string reverting_archived, string rev_revert_offset, string revisions_reverted, string reverted_to_rev_id)
 	{
 		this.rev_id = rev_id;

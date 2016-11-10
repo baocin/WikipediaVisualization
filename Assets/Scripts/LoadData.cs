@@ -7,6 +7,7 @@ using UnityEngine;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using ProtoBuf;
 
 public class LoadData : MonoBehaviour {
 	private List<PageEdit> Edits;
@@ -20,10 +21,19 @@ public class LoadData : MonoBehaviour {
 		if (File.Exists ("Cache/Revisions.bin")) {
 			//Load Pre-Parsed Data
 			Debug.Log("Loading Pre-Computed Data");
-			Edits = CacheHelper.LoadData<List<PageEdit>> ("Cache", "Edits.bin");
-			Users = CacheHelper.LoadData<List<User>> ("Cache", "Users.bin");
-			Pages = CacheHelper.LoadData<List<Page>> ("Cache", "Pages.bin");
-			Revisions = CacheHelper.LoadData<Dictionary<string, Revision>> ("Cache", "Revisions.bin");
+			using (var file = File.OpenRead("Cache/Edits.bin")) {
+				Edits = Serializer.Deserialize<List<PageEdit>>(file);
+			}
+			using (var file = File.OpenRead("Cache/Users.bin")) {
+				Users = Serializer.Deserialize<List<User>>(file);
+			}
+			using (var file = File.OpenRead("Cache/Pages.bin")) {
+				Pages = Serializer.Deserialize<List<Page>>(file);
+			}
+			using (var file = File.OpenRead("Cache/Revisions.bin")) {
+				Revisions = Serializer.Deserialize<Dictionary<string, Revision>>(file);
+			}
+
 		} else {
 			//Recalculate everything from scratch
 			Debug.Log("Could not find pre-parsed data, now parsing from scratch");
@@ -58,7 +68,6 @@ public class LoadData : MonoBehaviour {
 		}
 		Debug.Log ("PageEdits currently loaded:" + Edits.Count);
 
-
 		Debug.Log ("Loading all Vandal Page Edits (File Count:" + vandalFiles.Length + ")");
 		foreach (var file in vandalFiles) {
 			PageEdit [] edits = JsonHelper.getJsonArray<PageEdit> (file.text);
@@ -66,8 +75,6 @@ public class LoadData : MonoBehaviour {
 		}
 
 		Debug.Log ("PageEdits currently loaded:" + Edits.Count);
-
-
 
 		Debug.Log ("Loading Users");
 		TextAsset userFile = Resources.Load<TextAsset> ("SetupData/other/users");
@@ -117,10 +124,30 @@ public class LoadData : MonoBehaviour {
 		}
 
 
-		CacheHelper.SaveData ("Cache", "Edits.json", Edits);
-		CacheHelper.SaveData ("Cache", "Users.json", Users);
-		CacheHelper.SaveData ("Cache", "Pages.json", Pages);
-		CacheHelper.SaveData ("Cache", "Revisions.json", Revisions);
+//		CacheHelper.SaveData ("Cache", "Edits.json", Edits);
+//		SimpleSerializer a = new SimpleSerializer();
+//		a.SaveToFile (Edits, "Cache/Edits.bin", gzipCompress: true);
+
+//		Debug.Log (Edits);
+		using (var file = File.Create("Cache/Edits.bin")) {
+			Serializer.Serialize(file, Edits);
+		}
+		using (var file = File.Create("Cache/Users.bin")) {
+			Serializer.Serialize(file, Users);
+		}
+		using (var file = File.Create("Cache/Pages.bin")) {
+			Serializer.Serialize(file, Pages);
+		}
+		using (var file = File.Create("Cache/Revisions.bin")) {
+			Serializer.Serialize(file, Revisions);
+		}
+
+//		a.SaveToFile (Users, "Cache/Users.bin", gzipCompress: true);
+//		a.SaveToFile (Pages, "Cache/Pages.bin", gzipCompress: true);
+//		a.SaveToFile (Revisions, "Cache/Revisions.bin", gzipCompress: true);
+//		CacheHelper.SaveData ("Cache", "Users.json", Users);
+//		CacheHelper.SaveData ("Cache", "Pages.json", Pages);
+//		CacheHelper.SaveData ("Cache", "Revisions.json", Revisions);
 	}
 
 }
@@ -147,31 +174,41 @@ public class JsonHelper
 		public T[] array;
 	}
 }
-
-public class CacheHelper
-{
-	public static void SaveData(string directory, string filename, object data)
-	{
-		if (!Directory.Exists(directory))
-			Directory.CreateDirectory(directory);
-		
-		BinaryFormatter formatter = new BinaryFormatter();
-		FileStream saveFile = File.Create(Path.Combine(directory, filename));
-
-		formatter.Serialize(saveFile, data);
-
-		saveFile.Close();
-	}
-
-	public static T LoadData<T>(string directory, string filename)
-	{
-		BinaryFormatter formatter = new BinaryFormatter();
-		FileStream saveFile = File.Open(Path.Combine(directory, filename), FileMode.Open);
-
-		T data = (T)formatter.Deserialize(saveFile);
-
-		saveFile.Close();
-
-		return data;
-	}
-}
+//
+//public class CacheHelper
+//{
+//	public static void SaveData(string directory, string filename, object data)
+//	{
+//		if (!Directory.Exists(directory))
+//			Directory.CreateDirectory(directory);
+//		
+////		BinaryFormatter formatter = new BinaryFormatter();
+////		FileStream saveFile = File.Create(Path.Combine(directory, filename));
+////
+////		formatter.Serialize(saveFile, data);
+////
+//		File outFile = Path.Combine (directory, filename);
+//
+//		string json = JsonConvert.SerializeObject (data);
+//		using (StreamWriter outputFile = new StreamWriter ()) {
+//			outputFile.Write (json);
+//		}
+//	}
+//
+//	public static T LoadData<T>(string directory, string filename)
+//	{
+////		BinaryFormatter formatter = new BinaryFormatter();
+////		FileStream saveFile = File.Open(Path.Combine(directory, filename), FileMode.Open);
+////
+////		T data = (T)formatter.Deserialize(saveFile);
+////
+////		saveFile.Close();
+////
+////
+//		using (StreamReader inputFile = new StreamReader (Path.Combine (directory, filename))) {
+//			T deserializedProduct = JsonConvert.DeserializeObject<T>(inputFile.ReadToEnd());
+//			return deserializedProduct;
+//		}
+//		return null;
+//	}
+//}
