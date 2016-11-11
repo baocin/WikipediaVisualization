@@ -7,7 +7,7 @@ using ProtoBuf;
 
 [ProtoContract]
 [Serializable]
-class Page
+public class Page
 {
 	[ProtoMember(1)]
 	public string pagetitle;
