@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GenerateVisualization : MonoBehaviour {
-	private bool renderVisualization;
 	public GameObject userTemplate;
 	public GameObject pageTemplate;
 
@@ -28,23 +27,37 @@ public class GenerateVisualization : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown (KeyCode.Space)) {
-			renderVisualization = !renderVisualization;
-		}
 
 
 	}
 
 	void GenerateCharacters(){
-		foreach (User u in cachedData.Users){
+		int i = 0;
+//		foreach (User u in cachedData.Users){
+		while(i < 100){
+			User u = cachedData.Users[Random.Range(0, cachedData.Users.Count-1)];
 			GameObject newUser = GenerateUser (u);
+			if (newUser.GetComponent<StoreUser> ().data.status.Equals("benign")) {
+				//Benign
+				newUser.GetComponent<Renderer> ().material.color = Color.blue;
+			} else {
+				//Vandal
+				newUser.GetComponent<Renderer> ().material.color = Color.red;
+			}
 			userObjects.Add(newUser);
+			i++;
+			if (i > 100)
+				break;
 		}
 
-//		foreach (Page p in cachedData.Pages){
-//			GameObject newPage = GeneratePage (p);
-//			pageObjects.Add(newPage);
-//		}
+		i = 0;
+		foreach (Page p in cachedData.Pages){
+			GameObject newPage = GeneratePage (p);
+			pageObjects.Add(newPage);
+			i++;
+			if (i > 100)
+				break;
+		}
 
 	}
 
@@ -52,7 +65,7 @@ public class GenerateVisualization : MonoBehaviour {
 		GameObject newUser = (GameObject) Instantiate (userTemplate, this.transform);
 
 		//Randomish Position
-		newUser.transform.position = new Vector3 (Random.Range (0, 10), Random.Range(0,1), Random.Range (0, 10));
+		newUser.transform.position = new Vector3 (this.transform.position.x + Random.Range (0, 10), this.transform.position.y +  Random.Range(0,7), this.transform.position.z +  Random.Range (0, 10));
 		newUser.GetComponent<StoreUser> ().data = data;
 
 		return newUser;
