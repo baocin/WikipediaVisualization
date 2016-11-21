@@ -13,4 +13,8 @@ public class StorePage : MonoBehaviour {
 	void Update () {
 	
 	}
+
+	void OnMouseDown(){
+		Debug.Log (data);
+	}
 }
