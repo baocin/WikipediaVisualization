@@ -16,10 +16,11 @@ public class GenerateVisualization : MonoBehaviour {
 
 	private DataManager cachedData;
 
-
-
-	public int numberPageColumns = 100;
+	public int numberColumns = 100;
 	private Transform centerPoint;
+	private float defaultRadius = 100f;
+
+	private List<GameObject> renderedPages;
 
 	// Use this for initialization
 	void Start () {
@@ -32,6 +33,7 @@ public class GenerateVisualization : MonoBehaviour {
 		userObjects = new List<GameObject> ();
 		pageObjects = new List<GameObject> ();
 		editObjects = new List<GameObject> ();
+		renderedPages = new List<GameObject> ();
 
 		cachedData = new DataManager ();
 
@@ -46,16 +48,16 @@ public class GenerateVisualization : MonoBehaviour {
 
 
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-		
+
 		//this.transform.Rotate(new Vector3(0.15f,0.0f, 0.0f));
 	}
 
 	void GenerateCharacters(){
 		int i = 0;
-//		foreach (User u in cachedData.Users){
+		//		foreach (User u in cachedData.Users){
 		while(i < 100){
 			User u = cachedData.Users[Random.Range(0, cachedData.Users.Count-1)];
 			GameObject newUser = GenerateUser (u);
@@ -72,14 +74,14 @@ public class GenerateVisualization : MonoBehaviour {
 				break;
 		}
 
-//		i = 0;
-//		foreach (Page p in cachedData.Pages){
-//			GameObject newPage = GeneratePage (p);
-//			pageObjects.Add(newPage);
-//			i++;
-//			if (i > 100)
-//				break;
-//		}
+		//		i = 0;
+		//		foreach (Page p in cachedData.Pages){
+		//			GameObject newPage = GeneratePage (p);
+		//			pageObjects.Add(newPage);
+		//			i++;
+		//			if (i > 100)
+		//				break;
+		//		}
 
 		i = 0;
 		foreach (PageEdit e in cachedData.VandalEdits){
@@ -92,7 +94,8 @@ public class GenerateVisualization : MonoBehaviour {
 	}
 
 	private GameObject GenerateEdit(PageEdit data){
-		GameObject newEdit = (GameObject) Instantiate (editTemplate, this.transform);
+		GameObject newEdit = (GameObject)Instantiate(editTemplate);
+		newEdit.transform.parent = this.transform;
 
 		//Randomish Position
 		newEdit.transform.position = new Vector3 (this.transform.position.x + Random.Range (0, 10), this.transform.position.y +  Random.Range(0,7), this.transform.position.z +  Random.Range (0, 10));
@@ -102,7 +105,8 @@ public class GenerateVisualization : MonoBehaviour {
 	}
 
 	private GameObject GenerateUser(User data){
-		GameObject newUser = (GameObject) Instantiate (userTemplate, this.transform);
+		GameObject newUser = (GameObject) Instantiate (userTemplate);
+		newUser.transform.parent = this.transform;
 
 		//Randomish Position
 		newUser.transform.position = new Vector3 (this.transform.position.x + Random.Range (0, 10), this.transform.position.y +  Random.Range(0,7), this.transform.position.z +  Random.Range (0, 10));
@@ -123,14 +127,15 @@ public class GenerateVisualization : MonoBehaviour {
 
 	void SpawnPages ()
 	{
-		float numPagesPerColumn = cachedData.Pages.Count / numberPageColumns;
-		Debug.Log ("numPagesPerColumn:" + numberPageColumns);
-		numPagesPerColumn = 10;
+		//float numPagesPerColumn = cachedData.Pages.Count / numberPageColumns;
+		//Debug.Log ("numPagesPerColumn:" + numberPageColumns);
+		float numberRows = 25f;
 
-		float yBuffer = 10f;
+		float yBuffer = 8f;
+		//float xBuffer = 5f;
 
-		for (int row = 0; row < numPagesPerColumn; row++){
-			for (int col = 0; col < numPagesPerColumn; col++) {
+		for (int row = 0; row < numberRows; row++){
+			for (int  col = 0; col < numberColumns; col++) {
 				//for (int i = 0; i < numberPageColumns; i++){
 				//foreach (Page p in cachedData.Pages){
 
@@ -139,21 +144,31 @@ public class GenerateVisualization : MonoBehaviour {
 				//Get position
 				Vector3 center = centerPoint.position;
 				center.y += yBuffer * row;
-				Vector3 pos = CirclePoint (col, numberPageColumns, center, 105.0f);
+
+				float radius = defaultRadius;
+				radius -= row * 4f;
+
+				//Debug.Log("col:" + col);
+				Vector3 pos = CirclePoint (col, numberColumns, center, radius);
 				Quaternion rot = Quaternion.FromToRotation (Vector3.forward, centerPoint.position - pos);
 
 				//Generate
-				GameObject newPage = (GameObject)Instantiate (pageTemplate, pos, rot, centerPoint);
+				GameObject newPage = (GameObject)Instantiate (pageTemplate, pos, rot);
+				newPage.transform.SetParent(centerPoint);
 				newPage.GetComponent<StorePage> ().data = pageData;
+
 				newPage.transform.LookAt (centerPoint);
 				newPage.transform.Rotate (new Vector3 (90, 0, 0));
+
+				renderedPages.Add (newPage);
 			}
 		}
 	}
 
-	Vector3 CirclePoint ( float i, int numberPoints, Vector3 center ,   float radius  ){
+	Vector3 CirclePoint ( int i, int numberPoints, Vector3 center ,   float radius  ){
 		//float ang = Random.value * 360;
-		float ang = (i/numberPoints) * 360;
+		float ang = (i/ (float) numberPoints) * 360.0f;
+		//Debug.Log("ang:" + ang);
 		Vector3 pos;
 		pos.x = center.x + radius * Mathf.Sin(ang * Mathf.Deg2Rad);
 		pos.y = center.y;
