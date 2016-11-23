@@ -10,8 +10,8 @@ public class GazeDetection : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		gazeTime = 0;
-		gazeThreshold = 0f;
+		gazeTime = 0f;	
+		gazeThreshold = 0.01f;	
 		pullForwardForce = 10f;
 	}
 	
@@ -36,10 +36,6 @@ public class GazeDetection : MonoBehaviour {
 			Debug.Log ("Not Same as previous");
 			gazeTime = 0;
 
-			//Push Back
-			if (focusedGazeObject != null)
-				focusedGazeObject.transform.position = (Camera.main.transform.forward * pullForwardForce + focusedGazeObject.transform.position);
-
 			focusedGazeObject = gazeHit.transform.gameObject;
 		}
 
@@ -50,46 +46,23 @@ public class GazeDetection : MonoBehaviour {
 			//Pull Selected Page Forward
 			focusedGazeObject.transform.position = (Camera.main.transform.forward * -1 * pullForwardForce + focusedGazeObject.transform.position);
 
-
 			//Debug.DrawRay (focusedGazeObject.transform.position, focusedGazeObject.transform.right, Color.red, 10f);
 			//Debug.DrawRay (focusedGazeObject.transform.position, focusedGazeObject.transform.forward, Color.blue, 10f);
 			//Debug.DrawRay (focusedGazeObject.transform.position, focusedGazeObject.transform.up, Color.green, 10f);
 
-
 			//reset gaze
 			gazeTime = 0;
+
+			//Push Back the previous Page
+			if (previousActivatedGazeObject != null)
+				previousActivatedGazeObject.transform.position = (Camera.main.transform.forward * pullForwardForce + previousActivatedGazeObject.transform.position);
+
+			//Save the current gaze object as the previous (to avoid reactivating the current object)
 			previousActivatedGazeObject = focusedGazeObject;
+
+			
 		}
 
 	}
-
-	IEnumerator PullIn(Vector3 pointA, Vector3 pointB)
-	{
-		while (true) {
-			yield return StartCoroutine(MoveObject(transform, pointA, pointB, 3.0f));
-			//yield return StartCoroutine(MoveObject(transform, pointB, pointA, 3.0f));
-		}
-	}
-
-	IEnumerator PushOut(Vector3 pointA, Vector3 pointB)
-	{
-		while (true) {
-			//yield return StartCoroutine(MoveObject(transform, pointA, pointB, 3.0f));
-			yield return StartCoroutine(MoveObject(transform, pointB, pointA, 3.0f));
-		}
-	}
-
-	IEnumerator MoveObject(Transform thisTransform, Vector3 startPos, Vector3 endPos, float time)
-	{
-		var i= 0.0f;
-		var rate= 1.0f/time;
-		while (i < 1.0f) {
-			i += Time.deltaTime * rate;
-			thisTransform.position = Vector3.Lerp(startPos, endPos, i);
-			yield return null; 
-		}
-	}
-
-
 
 }
