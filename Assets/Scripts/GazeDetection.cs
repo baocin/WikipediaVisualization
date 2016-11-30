@@ -7,11 +7,12 @@ public class GazeDetection : MonoBehaviour {
 	public float gazeTime;			//seconds
 	public float gazeThreshold;		//seconds
 	public float pullForwardForce;
+	public Vector3 previousPosition;
 
 	// Use this for initialization
 	void Start () {
 		gazeTime = 0f;	
-		gazeThreshold = 0.01f;	
+		gazeThreshold = 4f;	
 		pullForwardForce = 10f;
 	}
 	
@@ -43,22 +44,34 @@ public class GazeDetection : MonoBehaviour {
 		if (sameFocusAsPrevious && gazeTime > gazeThreshold && !focusedGazeObject.Equals(previousActivatedGazeObject)){
 			Debug.Log ("Gaze Activated");
 
+			//reset gaze
+			gazeTime = 0;
+
+			//Push Back the previous Page
+			if (previousActivatedGazeObject != null) {
+				previousActivatedGazeObject.transform.position = previousPosition;//(Camera.main.transform.forward * pullForwardForce + previousActivatedGazeObject.transform.position);
+			}
+
 			//Pull Selected Page Forward
+			previousPosition = focusedGazeObject.transform.position;
 			focusedGazeObject.transform.position = (Camera.main.transform.forward * -1 * pullForwardForce + focusedGazeObject.transform.position);
 
 			//Debug.DrawRay (focusedGazeObject.transform.position, focusedGazeObject.transform.right, Color.red, 10f);
 			//Debug.DrawRay (focusedGazeObject.transform.position, focusedGazeObject.transform.forward, Color.blue, 10f);
 			//Debug.DrawRay (focusedGazeObject.transform.position, focusedGazeObject.transform.up, Color.green, 10f);
 
-			//reset gaze
-			gazeTime = 0;
-
-			//Push Back the previous Page
-			if (previousActivatedGazeObject != null)
-				previousActivatedGazeObject.transform.position = (Camera.main.transform.forward * pullForwardForce + previousActivatedGazeObject.transform.position);
-
 			//Save the current gaze object as the previous (to avoid reactivating the current object)
 			previousActivatedGazeObject = focusedGazeObject;
+
+			//-------------- Update Graph --------------------------
+			try {
+				Page wikiPage = (Page) focusedGazeObject.GetComponent<StorePage>().data;
+				Debug.Log(wikiPage);
+				GenerateVisualization.UpdateGraph(wikiPage);
+
+			}catch(MissingComponentException e){
+				Debug.Log ("Could not find Page component of the focused object");
+			}
 
 			
 		}

@@ -51,8 +51,8 @@ public class DataManager {
 		}else{
 			//Recalculate everything from scratch
 			Debug.Log("Could not find pre-parsed data, now parsing from scratch");
-
-//			Parse();
+			Debug.Log ("Better go get some coffee");
+			Parse();
 
 			return false;
 		}
@@ -230,6 +230,46 @@ public class DataManager {
 		}
 	}
 
+
+	public IDictionary<DateTime, PageEdit> getUserEdits(Page page)
+	{
+		IDictionary<DateTime, PageEdit> edits = new Dictionary<DateTime, PageEdit>();
+
+		Debug.Log(page.pagetitle);
+
+		foreach (PageEdit be in BenignEdits){
+			if (page.pagetitle.Equals(be.pagetitle)){
+				Debug.Log(be.revtime);
+				Debug.Log(be.username);
+				//be.revid
+
+				//find revisions that correlate to this edit
+				//Revisions.Select(
+
+
+				DateTime editTime;
+				//DateTime.tr
+				//, "yyyy-MM-ddTHH:mm:ssZ",null,null, 
+				bool dateParseSuccess = DateTime.TryParse (be.revtime, out editTime);
+				if (dateParseSuccess) {
+					
+					edits.Add (editTime, be);
+				}
+
+				//edits.Add (be.revtime, be.username);
+			}
+		}
+
+//		foreach (PageEdit be in VandalEdits){
+//			if (page.pagetitle.Equals(be.pagetitle)){
+//				Debug.Log(be.revtime);
+//				Debug.Log(be.username);
+//			}
+//		}
+
+		return edits;
+	}
+
 }
 
 
@@ -253,4 +293,5 @@ public class JsonHelper
 	{
 		public T[] array;
 	}
+
 }

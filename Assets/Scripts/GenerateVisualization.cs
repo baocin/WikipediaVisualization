@@ -14,7 +14,7 @@ public class GenerateVisualization : MonoBehaviour {
 
 	private GameObject canvasObject;
 
-	private DataManager cachedData;
+	private static DataManager cachedData;
 
 	public int numberColumns = 100;
 	private Transform centerPoint;
@@ -174,5 +174,9 @@ public class GenerateVisualization : MonoBehaviour {
 		pos.y = center.y;
 		pos.z = center.z + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
 		return pos;
+	}
+
+	public static void UpdateGraph(Page page){
+		Debug.Log(cachedData.getUserEdits (page));
 	}
 }
