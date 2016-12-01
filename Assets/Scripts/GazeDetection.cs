@@ -12,7 +12,7 @@ public class GazeDetection : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		gazeTime = 0f;	
-		gazeThreshold = 4f;	
+		gazeThreshold = 1f;	
 		pullForwardForce = 10f;
 	}
 	

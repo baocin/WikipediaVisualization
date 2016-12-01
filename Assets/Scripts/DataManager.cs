@@ -231,33 +231,85 @@ public class DataManager {
 	}
 
 
-	public IDictionary<DateTime, PageEdit> getUserEdits(Page page)
+	public void getUserEdits(Page page, out List<Vector2> editValues, out List<string> groupValues)
 	{
-		IDictionary<DateTime, PageEdit> edits = new Dictionary<DateTime, PageEdit>();
+		Dictionary<int, int> edits = new Dictionary<int, int>();
+		editValues = new List<Vector2> ();
+		groupValues = new List<string> ();
 
-		Debug.Log(page.pagetitle);
+		//Debug.Log(page.pagetitle);
 
+		int counter = 0;
 		foreach (PageEdit be in BenignEdits){
 			if (page.pagetitle.Equals(be.pagetitle)){
-				Debug.Log(be.revtime);
-				Debug.Log(be.username);
+				counter++;
+				//Debug.Log(be.revtime);
+				//Debug.Log(be.username);
 				//be.revid
 
 				//find revisions that correlate to this edit
 				//Revisions.Select(
 
 
-				DateTime editTime;
+				DateTime revTime;
+				DateTime revertTime;
 				//DateTime.tr
 				//, "yyyy-MM-ddTHH:mm:ssZ",null,null, 
-				bool dateParseSuccess = DateTime.TryParse (be.revtime, out editTime);
-				if (dateParseSuccess) {
-					
-					edits.Add (editTime, be);
+				bool revTimeParseSuccess = DateTime.TryParse (be.revtime, out revTime);
+				bool revertTimeParseSuccess = DateTime.TryParse (be.revertTime, out revertTime);
+				if (revTimeParseSuccess && revertTimeParseSuccess) {
+					if (edits.ContainsKey(revTime.Millisecond)){
+						edits[revTime.Millisecond] += 1;
+					}else{
+						edits[revTime.Millisecond] = 1;
+					}
 				}
 
 				//edits.Add (be.revtime, be.username);
 			}
+		}
+
+		Debug.Log (counter);
+		//Debug.Log (edits);
+		
+		foreach (KeyValuePair<int, int> pair in edits){
+			editValues.Add (new Vector2 ((int)pair.Key, (int)pair.Value));
+			Debug.Log (pair.Key);
+			Debug.Log(pair.Value);
+
+			/*
+			string dayName = "";
+			switch (pair.Key) {
+			case DayOfWeek.Friday:
+				dayName = "Friday";
+					break;
+			case DayOfWeek.Monday:
+				dayName = "Monday";
+				break;
+			case DayOfWeek.Tuesday:
+				dayName = "Tuesday";
+				break;
+			case DayOfWeek.Wednesday:
+				dayName = "Wednesday";
+				break;
+			case DayOfWeek.Thursday:
+				dayName = "Thursday";
+				break;
+			case DayOfWeek.Saturday:
+				dayName = "Saturday";
+				break;
+			case DayOfWeek.Sunday:
+				dayName = "Sunday";
+				break;
+			}
+
+*/
+			groupValues.Add (pair.Key + "d," + pair.Key);
+
+
+			//Debug.Log (pair);
+			//Console.WriteLine("{0}, {1}", pair.Key, pair.Value);
+
 		}
 
 //		foreach (PageEdit be in VandalEdits){
@@ -267,7 +319,7 @@ public class DataManager {
 //			}
 //		}
 
-		return edits;
+		//return editValues;
 	}
 
 }

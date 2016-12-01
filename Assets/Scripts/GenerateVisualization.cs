@@ -177,6 +177,13 @@ public class GenerateVisualization : MonoBehaviour {
 	}
 
 	public static void UpdateGraph(Page page){
-		Debug.Log(cachedData.getUserEdits (page));
+		string title = page.pagetitle;
+		List<Vector2> editValues = new List<Vector2> ();
+		List<string> groupValues = new List<string> ();
+		cachedData.getUserEdits (page, out editValues, out groupValues);
+
+		GameObject timeline = GameObject.Find ("Canvas");
+		timeline.GetComponent<DrawTimeLine> ().UpdateGraph (editValues, groupValues, title);
+		//timeline.
 	}
 }
