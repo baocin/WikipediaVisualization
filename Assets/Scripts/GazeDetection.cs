@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GazeDetection : MonoBehaviour {
 	private GameObject focusedGazeObject;
@@ -8,12 +9,19 @@ public class GazeDetection : MonoBehaviour {
 	public float gazeThreshold;		//seconds
 	public float pullForwardForce;
 	public Vector3 previousPosition;
+    public GameObject light;
+    public GameObject pageLabel;
+
 
 	// Use this for initialization
 	void Start () {
 		gazeTime = 0f;	
-		gazeThreshold = 1f;	
+		gazeThreshold = 0.2f;	
 		pullForwardForce = 10f;
+
+        light = GameObject.Find("highlight");
+        pageLabel = GameObject.Find("PageLabel");
+        
 	}
 	
 	// Update is called once per frame
@@ -34,7 +42,7 @@ public class GazeDetection : MonoBehaviour {
 
 		//If focus has changed reset to new target
 		if (rayHit && !sameFocusAsPrevious) {
-			Debug.Log ("Not Same as previous");
+			//Debug.Log ("Not Same as previous");
 			gazeTime = 0;
 
 			focusedGazeObject = gazeHit.transform.gameObject;
@@ -43,6 +51,22 @@ public class GazeDetection : MonoBehaviour {
 		//Only activate gaze once threshold reached and if object hasn't already been activated
 		if (sameFocusAsPrevious && gazeTime > gazeThreshold && !focusedGazeObject.Equals(previousActivatedGazeObject)){
 			Debug.Log ("Gaze Activated");
+
+            //focusedGazeObject.GetComponent<Renderer>().material.color = Color.blue;
+
+            //Light to highlight the original 
+            //light.transform.position = focusedGazeObject.transform.position;
+            //light.SetActive(true);
+
+            //Set Text Label Position
+            pageLabel.transform.position = focusedGazeObject.transform.position;
+            pageLabel.transform.position = (Camera.main.transform.forward * -1 * 20 + pageLabel.transform.position);
+            pageLabel.transform.LookAt(Camera.main.transform);
+            pageLabel.transform.Rotate(new Vector3(0f, 180f, 0f));
+
+            //Update the pageLabel with the page title
+            var textLabel = pageLabel.GetComponent<Text>();
+            textLabel.text = focusedGazeObject.GetComponent<StorePage>().data.pagetitle;
 
 			//reset gaze
 			gazeTime = 0;
@@ -66,7 +90,7 @@ public class GazeDetection : MonoBehaviour {
 			//-------------- Update Graph --------------------------
 			try {
 				Page wikiPage = (Page) focusedGazeObject.GetComponent<StorePage>().data;
-				Debug.Log(wikiPage);
+				//Debug.Log(wikiPage);
 				GenerateVisualization.UpdateGraph(wikiPage);
 
 			}catch(MissingComponentException e){

@@ -231,96 +231,90 @@ public class DataManager {
 	}
 
 
-	public void getUserEdits(Page page, out List<Vector2> editValues, out List<string> groupValues)
+	/// <summary>
+    /// 
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="editValues"></param>
+    /// <param name="vandalValues"></param>
+    public void getUserEdits(Page page, out List<string> benignValues, out List<string> vandalValues)
 	{
-		Dictionary<int, int> edits = new Dictionary<int, int>();
-		editValues = new List<Vector2> ();
-		groupValues = new List<string> ();
+		Dictionary<string, int> vandalEdits = new Dictionary<string, int>();
+        Dictionary<string, int> benignEdits = new Dictionary<string, int>();
+        benignValues = new List<string> ();
+		vandalValues = new List<string> ();
+        
 
-		//Debug.Log(page.pagetitle);
-
-		int counter = 0;
-		foreach (PageEdit be in BenignEdits){
+        //VANDAL
+		foreach (PageEdit be in VandalEdits){
 			if (page.pagetitle.Equals(be.pagetitle)){
-				counter++;
-				//Debug.Log(be.revtime);
-				//Debug.Log(be.username);
-				//be.revid
-
-				//find revisions that correlate to this edit
-				//Revisions.Select(
-
-
 				DateTime revTime;
 				DateTime revertTime;
-				//DateTime.tr
-				//, "yyyy-MM-ddTHH:mm:ssZ",null,null, 
+
 				bool revTimeParseSuccess = DateTime.TryParse (be.revtime, out revTime);
 				bool revertTimeParseSuccess = DateTime.TryParse (be.revertTime, out revertTime);
-				if (revTimeParseSuccess && revertTimeParseSuccess) {
-					if (edits.ContainsKey(revTime.Millisecond)){
-						edits[revTime.Millisecond] += 1;
-					}else{
-						edits[revTime.Millisecond] = 1;
-					}
-				}
+                Debug.Log(revTimeParseSuccess + "  " + revertTimeParseSuccess);
+                // && revertTimeParseSuccess
+                if (revTimeParseSuccess) {
+                    if (vandalEdits.ContainsKey(revTime.ToString("MM-dd"))) {
+                        vandalEdits[revTime.ToString("MM-dd")] += 1;
+                    }else
+                    {
+                        vandalEdits[revTime.ToString("MM-dd")] = 1;
+                    }
 
-				//edits.Add (be.revtime, be.username);
+                    //editValues.Add(new Vector2(counter, long.Parse(revTime.ToString("MMdd"))));
+                    //editValues.Add(new Vector2(counter, long.Parse(revertTime.ToString("yyyyMMddHHmmss")) % 1000));
+                }
 			}
 		}
-
-		Debug.Log (counter);
-		//Debug.Log (edits);
-		
-		foreach (KeyValuePair<int, int> pair in edits){
-			editValues.Add (new Vector2 ((int)pair.Key, (int)pair.Value));
-			Debug.Log (pair.Key);
-			Debug.Log(pair.Value);
-
-			/*
-			string dayName = "";
-			switch (pair.Key) {
-			case DayOfWeek.Friday:
-				dayName = "Friday";
-					break;
-			case DayOfWeek.Monday:
-				dayName = "Monday";
-				break;
-			case DayOfWeek.Tuesday:
-				dayName = "Tuesday";
-				break;
-			case DayOfWeek.Wednesday:
-				dayName = "Wednesday";
-				break;
-			case DayOfWeek.Thursday:
-				dayName = "Thursday";
-				break;
-			case DayOfWeek.Saturday:
-				dayName = "Saturday";
-				break;
-			case DayOfWeek.Sunday:
-				dayName = "Sunday";
-				break;
-			}
-
-*/
-			groupValues.Add (pair.Key + "d," + pair.Key);
+        foreach (KeyValuePair<string, int> pair in vandalEdits)
+        {
+            vandalValues.Add((string)pair.Key + "," + (int)pair.Value);
+        }
+        
+        
 
 
-			//Debug.Log (pair);
-			//Console.WriteLine("{0}, {1}", pair.Key, pair.Value);
 
-		}
+        //BENIGN
+        foreach (PageEdit be in BenignEdits)
+        {
+            if (page.pagetitle.Equals(be.pagetitle))
+            {
+                DateTime revTime;
+                DateTime revertTime;
 
-//		foreach (PageEdit be in VandalEdits){
-//			if (page.pagetitle.Equals(be.pagetitle)){
-//				Debug.Log(be.revtime);
-//				Debug.Log(be.username);
-//			}
-//		}
+                bool revTimeParseSuccess = DateTime.TryParse(be.revtime, out revTime);
+                bool revertTimeParseSuccess = DateTime.TryParse(be.revertTime, out revertTime);
+                Debug.Log(revTimeParseSuccess + "  " + revertTimeParseSuccess);
+                // && revertTimeParseSuccess
+                if (revTimeParseSuccess)
+                {
+                    if (benignEdits.ContainsKey(revTime.ToString("MM-dd")))
+                    {
+                        benignEdits[revTime.ToString("MM-dd")] += 1;
+                    }
+                    else
+                    {
+                        benignEdits[revTime.ToString("MM-dd")] = 1;
+                    }
 
-		//return editValues;
-	}
+                    //editValues.Add(new Vector2(counter, long.Parse(revTime.ToString("MMdd"))));
+                    //editValues.Add(new Vector2(counter, long.Parse(revertTime.ToString("yyyyMMddHHmmss")) % 1000));
+                }
+            }
+        }
+        foreach (KeyValuePair<string, int> pair in benignEdits)
+        {
+            benignValues.Add((string)pair.Key + "," + (int)pair.Value);
+        }
+    }
+
+    private static bool IsRemovableData(Vector2 element)
+    {
+        return (element.Equals(Vector2.zero));
+    }
 
 }
 

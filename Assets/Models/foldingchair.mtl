@@ -1,0 +1,29 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b
+
+newmtl foldingchair_metal
+	Ns 10.000000
+	Ni 1.500000
+	illum 2
+	Ka 0.407843 0.407843 0.407843
+	Kd 0.407843 0.407843 0.407843
+	Ks 0.000000 0.000000 0.000000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka maps\foldingchair_metal_color.jpg
+	map_Kd maps\foldingchair_metal_color.jpg
+	map_Ks maps\foldingchair_metal_specular.jpg
+	map_bump maps\foldingchair_metal_bump.jpg
+	bump maps\foldingchair_metal_bump.jpg
+
+newmtl foldingchair_rubber
+	Ns 10.000000
+	Ni 1.500000
+	illum 2
+	Ka 0.588000 0.588000 0.588000
+	Kd 0.078431 0.078431 0.078431
+	Ks 0.000000 0.000000 0.000000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka maps\foldingchair_rubber_color.jpg
+	map_Kd maps\foldingchair_rubber_color.jpg
+	map_Ks maps\foldingchair_rubber_specular.jpg
+	map_bump maps\foldingchair_rubber_bump.jpg
+	bump maps\foldingchair_rubber_bump.jpg

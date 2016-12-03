@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Linq;
 
 public class GenerateVisualization : MonoBehaviour {
 	public GameObject userTemplate;
@@ -141,8 +141,16 @@ public class GenerateVisualization : MonoBehaviour {
 
 				Page pageData = cachedData.Pages [row * col];
 
-				//Get position
-				Vector3 center = centerPoint.position;
+                //if (pageData.pagetitle)
+                List<PageEdit> vandalEdits = cachedData.VandalEdits.Where(x => x.pagetitle.Equals(pageData.pagetitle)).ToList();
+                List<PageEdit> benignEdits = cachedData.BenignEdits.Where(x => x.pagetitle.Equals(pageData.pagetitle)).ToList();
+                //Debug.Log(pageEdits);
+                //Highlight the pages with vandal attributes
+
+                //Select(x => x.pagetitle = pageData.pagetitle);
+
+                //Get position
+                Vector3 center = centerPoint.position;
 				center.y += yBuffer * row;
 
 				float radius = defaultRadius;
@@ -154,14 +162,22 @@ public class GenerateVisualization : MonoBehaviour {
 
 				//Generate
 				GameObject newPage = (GameObject)Instantiate (pageTemplate, pos, rot);
-				newPage.transform.SetParent(centerPoint);
-				newPage.GetComponent<StorePage> ().data = pageData;
+                newPage.transform.SetParent(centerPoint);
+                newPage.GetComponent<StorePage>().data = pageData;
 
-				newPage.transform.LookAt (centerPoint);
-				newPage.transform.Rotate (new Vector3 (90, 0, 0));
+                newPage.transform.LookAt(centerPoint);
+                newPage.transform.Rotate(new Vector3(90, 0, 0));
 
-				renderedPages.Add (newPage);
-			}
+                if (vandalEdits.Count > 0)
+                {
+                    //newPage.GetComponent<MeshRenderer>().material.color = Color.black;
+                    //newPage.GetComponent<MeshRenderer>().enabled = false;
+                    //newPage.transform.position = (Camera.main.transform.forward * -1 * 20 + newPage.transform.position);
+                }
+                renderedPages.Add(newPage);
+
+
+            }
 		}
 	}
 
@@ -177,13 +193,16 @@ public class GenerateVisualization : MonoBehaviour {
 	}
 
 	public static void UpdateGraph(Page page){
-		string title = page.pagetitle;
-		List<Vector2> editValues = new List<Vector2> ();
-		List<string> groupValues = new List<string> ();
-		cachedData.getUserEdits (page, out editValues, out groupValues);
-
+        Debug.Log(page);
+        string title = page.pagetitle;
+        List<string> benignGroups = new List<string>();
+        List<string> vandalGroups = new List<string> ();
+		cachedData.getUserEdits (page, out benignGroups, out vandalGroups);
+        
 		GameObject timeline = GameObject.Find ("Canvas");
-		timeline.GetComponent<DrawTimeLine> ().UpdateGraph (editValues, groupValues, title);
+		timeline.GetComponent<DrawTimeLine> ().UpdateGraph (benignGroups, vandalGroups, title);
+
+        
 		//timeline.
 	}
 }
