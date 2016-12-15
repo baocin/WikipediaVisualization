@@ -22,6 +22,12 @@ public class GenerateVisualization : MonoBehaviour {
 
 	private List<GameObject> renderedPages;
 
+    public Material vandalMaterial;
+    public Material benignMaterial;
+
+    public Texture t;
+
+
 	// Use this for initialization
 	void Start () {
 		canvasObject = GameObject.Find("canvas");
@@ -170,9 +176,16 @@ public class GenerateVisualization : MonoBehaviour {
 
                 if (vandalEdits.Count > 0)
                 {
+                    //newPage.GetComponent<MeshRenderer>().material.shader = Shader.Find("wood_texture_background4");
+                    newPage.GetComponent<MeshRenderer>().material = vandalMaterial;
                     //newPage.GetComponent<MeshRenderer>().material.color = Color.black;
                     //newPage.GetComponent<MeshRenderer>().enabled = false;
                     //newPage.transform.position = (Camera.main.transform.forward * -1 * 20 + newPage.transform.position);
+                }
+                else
+                {
+                    //newPage.GetComponent<MeshRenderer>().material.shader  = Shader.Find("wood_texture_background1");
+                    newPage.GetComponent<MeshRenderer>().material = benignMaterial;
                 }
                 renderedPages.Add(newPage);
 
@@ -195,14 +208,45 @@ public class GenerateVisualization : MonoBehaviour {
 	public static void UpdateGraph(Page page){
         Debug.Log(page);
         string title = page.pagetitle;
-        List<string> benignGroups = new List<string>();
-        List<string> vandalGroups = new List<string> ();
-		cachedData.getUserEdits (page, out benignGroups, out vandalGroups);
+        
+
+        List<string> benignGroups = cachedData.getUserBenignValues(page);
+        List<string> vandalGroups = cachedData.getUserVandalValues(page);
         
 		GameObject timeline = GameObject.Find ("Canvas");
 		timeline.GetComponent<DrawTimeLine> ().UpdateGraph (benignGroups, vandalGroups, title);
-
         
-		//timeline.
-	}
+
+
+        Dictionary<string, int> benignEdits = cachedData.getUserBenignEdits(page);
+        Dictionary<string, int> vandalEdits = cachedData.getUserVandalEdits(page);
+
+        List<string> names = new List<string>();
+        //names[0] = "# Benign";
+        names.Add("# Benign");
+        names.Add("# Vandal");
+        //names[1] = "# Vandal";
+        IList<float> data = new List<float>();
+
+        float [] dataArray = new float[2];
+
+        foreach (string key in benignEdits.Keys)
+        {
+            //data.Insert(0, data.ElementAt(0) + benignEdits[key]);
+            dataArray[0] += benignEdits[key];
+        }
+        foreach (string key in vandalEdits.Keys)
+        {
+            //data.Insert(1, data.ElementAt(1) + vandalEdits[key]);
+            dataArray[1] += vandalEdits[key];
+        }
+        data = dataArray.ToList<float>();
+        Debug.Log("names: " + names[0] + " " + names[1]);
+        Debug.Log("data: " + data[0] + " " + data[1]);
+        GameObject pie = GameObject.Find("PieGraph");
+        pie.GetComponent<PieGraph>().UpdateGraph(names, data, title);
+
+
+        //timeline.
+    }
 }

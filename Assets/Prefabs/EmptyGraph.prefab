@@ -507,10 +507,10 @@ MonoBehaviour:
   _AxisMinValue: 0
   _AxisMaxValue: 20
   _AxisNumTicks: 3
-  _MinAutoGrow: 0
-  _MaxAutoGrow: 0
-  _MinAutoShrink: 0
-  _MaxAutoShrink: 0
+  _MinAutoGrow: 1
+  _MaxAutoGrow: 1
+  _MinAutoShrink: 1
+  _MaxAutoShrink: 1
   _AxisLinePadding: 20
   _AxisUseNonTickPercent: 0
   _AxisNonTickPercent: 0
@@ -655,21 +655,18 @@ MonoBehaviour:
   - Nov
   - Dec
   tooltipOffset: {x: 10, y: 10}
-  tooltipNumberDecimals: 2
-  tooltipDisplaySeriesName: 1
+  tooltipNumberDecimals: 0
+  tooltipDisplaySeriesName: 0
   tooltipAnimationsEnabled: 1
-  tooltipAnimationsEasetype: 24
+  tooltipAnimationsEasetype: 28
   tooltipAnimationsDuration: 0.5
   autoAnimationsEasetype: 6
   autoAnimationsDuration: 1
   lineSeries: []
   pointPrefabs:
   - {fileID: 100000, guid: 05e104570c7603c469be4cb29516b8b2, type: 2}
-  - {fileID: 100000, guid: 308a2059da1066a419a59dc2297088fc, type: 2}
-  - {fileID: 100000, guid: bb74c57c04ea363488e624e3aff32675, type: 2}
   linkPrefabs:
   - {fileID: 100000, guid: 8ff2d7ad7fa13cb47be0a0f6f32ab55c, type: 2}
-  - {fileID: 100000, guid: cb01acfb47f4ae747a94c428f60fd060, type: 2}
   barPrefab: {fileID: 100000, guid: 0ee359d59018e1243a997a3eedcb1e70, type: 2}
   seriesPrefab: {fileID: 100004, guid: c32b742ffb9238c4cadf767bfddaecff, type: 2}
   legend: {fileID: 11493588}
@@ -702,7 +699,7 @@ MonoBehaviour:
   _autoAnimationsEnabled: 1
   _autoFitLabels: 0
   _autoFitPadding: 10
-  _tickSize: {x: 2, y: 5}
+  _tickSize: {x: 1, y: 3}
   _graphTitleString: 
   _graphTitleOffset: {x: 0, y: 20}
   theTooltip: {fileID: 0}
@@ -734,10 +731,10 @@ MonoBehaviour:
   _AxisMinValue: 0
   _AxisMaxValue: 100
   _AxisNumTicks: 5
-  _MinAutoGrow: 0
-  _MaxAutoGrow: 0
-  _MinAutoShrink: 0
-  _MaxAutoShrink: 0
+  _MinAutoGrow: 1
+  _MaxAutoGrow: 1
+  _MinAutoShrink: 1
+  _MaxAutoShrink: 1
   _AxisLinePadding: 20
   _AxisUseNonTickPercent: 0
   _AxisNonTickPercent: 0
@@ -1597,7 +1594,7 @@ RectTransform:
   m_GameObject: {fileID: 182650}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 22401496}
   m_Father: {fileID: 22400236}

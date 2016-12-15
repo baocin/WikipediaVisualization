@@ -10,7 +10,7 @@ public class DrawTimeLine : MonoBehaviour {
 	public WMG_Series series1;
     public WMG_Series series2;
     public List<Vector2> series1Data;
-	public bool useData2;
+	public bool useData2 = false;
 	public List<string> series1Data2;
 
 	private GameObject graphGO;
@@ -23,36 +23,38 @@ public class DrawTimeLine : MonoBehaviour {
 
 
 		series1 = graph.addSeries();
-		graph.xAxis.AxisMaxValue = 5;
+        series1.pointValues.SetList(series1Data);
 
-		if (useData2) {
-			List<string> groups = new List<string>();
-			List<Vector2> data = new List<Vector2>();
-			for (int i = 0; i < series1Data2.Count; i++) {
-				string[] row = series1Data2[i].Split(',');
-				groups.Add(row[0]);
-				if (!string.IsNullOrEmpty(row[1])) {
-					float y = float.Parse(row[1]);
-					data.Add(new Vector2(i+1, y));
-				}
-			}
+        //graph.xAxis.AxisMaxValue = 5;
 
-			graph.groups.SetList(groups);
-			graph.useGroups = true;
+        //if (useData2) {
+        //	List<string> groups = new List<string>();
+        //	List<Vector2> data = new List<Vector2>();
+        //	for (int i = 0; i < series1Data2.Count; i++) {
+        //		string[] row = series1Data2[i].Split(',');
+        //		groups.Add(row[0]);
+        //		if (!string.IsNullOrEmpty(row[1])) {
+        //			float y = float.Parse(row[1]);
+        //			data.Add(new Vector2(i+1, y));
+        //		}
+        //	}
 
-			graph.xAxis.LabelType = WMG_Axis.labelTypes.groups;
-			graph.xAxis.AxisNumTicks = groups.Count;
+        //	graph.groups.SetList(groups);
+        //	graph.useGroups = true;
 
-			series1.seriesName = "Look at a page to get started";
+        //	graph.xAxis.LabelType = WMG_Axis.labelTypes.groups;
+        //	graph.xAxis.AxisNumTicks = groups.Count;
 
-			series1.UseXDistBetweenToSpace = true;
+        //	series1.seriesName = "Look at a page to get started";
 
-			series1.pointValues.SetList(data);
-		}
-		else {
-			series1.pointValues.SetList(series1Data);
-		}
-	}
+        //	series1.UseXDistBetweenToSpace = true;
+
+        //	series1.pointValues.SetList(data);
+        //}
+        //else {
+        //	series1.pointValues.SetList(series1Data);
+        //}
+    }
 
     public void UpdateGraph(List<string> benignData, List<string> vandalData, string newTitle)
     {
@@ -67,15 +69,33 @@ public class DrawTimeLine : MonoBehaviour {
         //}
 
         //Delete All previous series (instead of deleting and remaking the graph)
-        for (int i = 0; i < 10; i++)
+        Debug.Log("Updating Graph");
+        foreach (string t in benignData)
         {
-            graph.deleteSeries();
+            Debug.Log(t);
+        }
+        foreach (string t in vandalData)
+        {
+            Debug.Log(t);
+        }
+        Debug.Log(newTitle);
+
+        try
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                graph.deleteSeries();
+            }
+        }catch(System.Exception e)
+        {
+            Debug.Log("Ignoring error removing series that didn't exist.");
         }
 
         //Graph Settings
         graph.graphTitleString = newTitle;
         graph.xAxis.LabelType = WMG_Axis.labelTypes.groups;
-        graph.useGroups = true;
+        //graph.useGroups = true;
+        graph.yAxis.MaxAutoShrink = true;
 
         //graph.xAxis.changeLabelText();
         //graph.yAxis.changeLabelText();
@@ -106,9 +126,6 @@ public class DrawTimeLine : MonoBehaviour {
         //Populate Data
         series1.pointValues.SetList(data);
 
-
-
-
         //Benign Edit Series Settings
         series2 = graph.addSeries();
         series2.lineColor = Color.blue;
@@ -135,7 +152,7 @@ public class DrawTimeLine : MonoBehaviour {
 
         //Set groups
         graph.groups.SetList(groups);
-        graph.xAxis.AxisLabelSkipInterval = 1;
+        graph.xAxis.AxisLabelSkipInterval = 0;
 
 
         if (groups.Count > 1){

@@ -23,9 +23,14 @@ public class GazeDetection : MonoBehaviour {
         pageLabel = GameObject.Find("PageLabel");
         
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
+        CheckGaze();
+    }
+
+    public void CheckGaze() { 
 		//Send out a ray from the main camera's forward direction
 		RaycastHit gazeHit = new RaycastHit();
 		Ray cameraRay = new Ray (Camera.main.transform.position, Camera.main.transform.forward);
@@ -90,8 +95,10 @@ public class GazeDetection : MonoBehaviour {
 			//-------------- Update Graph --------------------------
 			try {
 				Page wikiPage = (Page) focusedGazeObject.GetComponent<StorePage>().data;
-				//Debug.Log(wikiPage);
-				GenerateVisualization.UpdateGraph(wikiPage);
+                Debug.Log(wikiPage);
+
+                GenerateVisualization.UpdateGraph(wikiPage);
+                
 
 			}catch(MissingComponentException e){
 				Debug.Log ("Could not find Page component of the focused object");
