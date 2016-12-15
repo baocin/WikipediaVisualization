@@ -31,3 +31,6 @@ Csv files are converted to Json before processing in Unity.
   * Without an Oculus:
     * Left Mouse button to rotate Camera
     * Right Mouse button to activate wikipedia pages 
+
+#Presentation
+ * [Link to Google Slides Presentation](https://docs.google.com/a/uncc.edu/presentation/d/1-OWO1GVsEJFMeWijXpf4m7mIm1rSpP4ZB4rcKcsLqFg/edit?usp=sharing)
